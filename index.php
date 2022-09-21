@@ -100,6 +100,18 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
         print('<h2>Directory: ' . $dir . '</h2>');
 
+        //Delete file
+
+        $delete = $_GET['delete'];
+
+        if (isset($delete)) {
+            if (unlink($dir . '/' . $delete)) {
+                print('<div>File was deleted!</div>');
+            } else {
+                print('<div>Failed to delete file. (File does not exist or you do not have permission)</div>');
+            }
+        }
+
         //Make new directory
 
         $new_dirname = $_GET['new_dirname'];
@@ -124,11 +136,13 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
                 if ($item != ".." && $item != ".") {
                     print('<tr>');
                     print('<td>' . (is_dir($dir . '/' . $item)
-                        ? '<a href="'  . '?dir=' . $dir . "/" . $item . '">' . $item . '</a>'
+                        ? '<a href="?dir=' . $dir . "/" . $item . '">' . $item . '</a>'
                         : $item)
                         . '</td>');
                     print('<td>' . (is_dir($dir . '/' . $item) ? "Folder" : "File") . '</td>');
-                    print('<td></td>');
+                    print('<td>' . (is_dir($dir . '/' . $item)
+                        ? ''
+                        : '<a class="button" style="background-color: red;" href="?dir=' . $dir . '&delete=' . $item . '">Delete</a>') . '</td>');
                     print('</tr>');
                 }
             }
@@ -140,7 +154,6 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
         print('<input type="text" name="new_dirname" required>');
         print('<button type="submit" style="display: block;">New Folder</button>');
         print('</form>');
-        // print('<a class="button" href="?dir=' . $dir . '&' '">Back</a>');
 
         for ($i = -1; $i > (0 - strlen($dir)); $i--) {
             if ($dir[$i] === '/') {
