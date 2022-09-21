@@ -61,7 +61,7 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
     .button {
         display: inline-block;
-        background-color: #555;
+        background-color: #888;
         border: 1px solid #000;
         padding: 5px;
         text-decoration: none;
