@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if ($_GET['action'] === 'logout') {
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_destroy();
     session_start();
 }
@@ -84,17 +84,17 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
     // Display directory items if logged in
 
-    if ($_SESSION['logged_in']) {
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
         print('<a class="button" href="?action=logout">Log out</a>');
 
-        $dir = $_GET['dir'];
+        isset($_GET['dir']) ? $dir = $_GET['dir'] : $dir = null;
 
         //Check user OS and set default directory if there is no directory
 
-        if (!isset($dir) || $dir === '' || $dir === 'C:') {
+        if (!isset($dir) || $dir === '' || $dir === '..') {
             $agent = $_SERVER['HTTP_USER_AGENT'];
             if (preg_match('/Linux/', $agent)) $dir = '/';
-            elseif (preg_match('/Win/', $agent)) $dir = 'C:/';
+            elseif (preg_match('/Win/', $agent)) $dir = '../';
             elseif (preg_match('/Mac/', $agent)) $dir = '/';
         }
 
@@ -102,7 +102,7 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
         //Delete file
 
-        $delete = $_GET['delete'];
+        isset($_GET['delete']) ? $delete = $_GET['delete'] : $delete = null;
 
         if (isset($delete)) {
             if (unlink($dir . '/' . $delete)) {
@@ -114,7 +114,7 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
         //Download file
 
-        $download = $_GET['download'];
+        isset($_GET['download']) ? $download = $_GET['download'] : $download = null;
 
         if (isset($download)) {
 
@@ -144,7 +144,7 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
         //Make new directory
 
-        $new_dirname = $_GET['new_dirname'];
+        isset($_GET['new_dirname']) ? $new_dirname = $_GET['new_dirname'] : $new_dirname = null;
 
         if (isset($new_dirname) && $new_dirname != '') {
             if (!mkdir($dir . '/' . $new_dirname, preg_match('/Win/', $_SERVER['HTTP_USER_AGENT'])
