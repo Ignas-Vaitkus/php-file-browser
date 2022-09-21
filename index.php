@@ -126,10 +126,30 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
             }
         }
 
+        //Upload file
+
+        if (isset($_FILES['file'])) {
+            $file_name = $_FILES['file']['name'];
+            $file_tmp = $_FILES['file']['tmp_name'];
+            $error = false;
+
+            print($dir . '/' . $file_name);
+
+            if ($_FILES['file']['size'] > 4194304) {
+                print('<div style="color: red;">File size must be smaller than 4MB</div>');
+            } else {
+                if (move_uploaded_file($file_tmp, $dir . '/' . $file_name)) {
+                    print('<div style="color: green;">File uploaded successfully</div>');
+                } else {
+                    print('<div style="color: red;">You do not have permission to upload the file or directory does not exist</div>');
+                }
+            }
+        }
+
         $dir_items = scandir($dir);
 
         if (!$dir_items) {
-            print '<h4>Invalid directory or you do not have permission to access it!<h4>';
+            print('<h4>Invalid directory or you do not have permission to access it!<h4>');
         } else {
             print('<table><th>Name</th><th>Type</th><th>Actions</th>');
             foreach ($dir_items as $item) {
@@ -149,11 +169,26 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
             print("</table>");
         }
 
+        print('<br>');
+
+        //New folder form
+
         print('<form action="./" method="GET">');
         print('<input type="text" name="dir" value="' . $dir . '" style="display: none;" required>');
         print('<input type="text" name="new_dirname" required>');
         print('<button type="submit" style="display: block;">New Folder</button>');
         print('</form>');
+        print('<br>');
+
+        //Upload file form
+
+        print('<form action="" method="POST" enctype="multipart/form-data">');
+        print('<input type="file" name="file">');
+        print('<input type="submit" />');
+        print('</form>');
+        print('<br>');
+
+        //Back Button
 
         for ($i = -1; $i > (0 - strlen($dir)); $i--) {
             if ($dir[$i] === '/') {
