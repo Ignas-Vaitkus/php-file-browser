@@ -100,6 +100,20 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
         print('<h2>Directory: ' . $dir . '</h2>');
 
+        //Make new directory
+
+        $new_dirname = $_GET['new_dirname'];
+
+        if (isset($new_dirname) && $new_dirname != '') {
+            if (!mkdir($dir . '/' . $new_dirname, preg_match('/Win/', $_SERVER['HTTP_USER_AGENT'])
+                ? null
+                : 0777)) {
+                print('<div style="color: red;">Failed to create folder! It already exists or you do not have permission.</div>');
+            } else {
+                print('<div style="color: green;">Created new folder!</div>');
+            }
+        }
+
         $dir_items = scandir($dir);
 
         if (!$dir_items) {
@@ -121,17 +135,27 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
             print("</table>");
         }
 
+        print('<form action="./" method="GET">');
+        print('<input type="text" name="dir" value="' . $dir . '" style="display: none;" required>');
+        print('<input type="text" name="new_dirname" required>');
+        print('<button type="submit" style="display: block;">New Folder</button>');
+        print('</form>');
+        // print('<a class="button" href="?dir=' . $dir . '&' '">Back</a>');
+
         for ($i = -1; $i > (0 - strlen($dir)); $i--) {
             if ($dir[$i] === '/') {
                 $dir = substr($dir, 0, $i);
                 break;
             }
         }
-
+        print('<br>');
         print('<a class="button" href="?dir=' . $dir . '">Back</a>');
     }
 
     ?>
+
+
+
 </body>
 
 </html>
