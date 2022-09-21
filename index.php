@@ -89,7 +89,7 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
 
         $dir = $_GET['dir'];
 
-        //Check user OS and set default directory
+        //Check user OS and set default directory if there is no directory
 
         if (!isset($dir) || $dir === '' || $dir === 'C:') {
             $agent = $_SERVER['HTTP_USER_AGENT'];
@@ -110,6 +110,36 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
             } else {
                 print('<div>Failed to delete file. (File does not exist or you do not have permission)</div>');
             }
+        }
+
+        //Download file
+
+        $download = $_GET['download'];
+
+        if (isset($download)) {
+
+            $file = $dir . '/' . $download;
+
+            $fileToDownloadEscaped = str_replace('&nbsp;', ' ', htmlentities($file, 0, 'utf-8'));
+
+            ob_clean();
+            ob_start();
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename=' . basename($fileToDownloadEscaped));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($fileToDownloadEscaped));
+
+            ob_end_flush();
+
+            if (!readfile($fileToDownloadEscaped)) {
+                print('<div style="color: red;">Failed to download file! It does not exist or you do not have permission.</div>');
+            };
+            exit;
         }
 
         //Make new directory
@@ -162,7 +192,11 @@ if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['passw
                     print('<td>' . (is_dir($dir . '/' . $item) ? "Folder" : "File") . '</td>');
                     print('<td>' . (is_dir($dir . '/' . $item)
                         ? ''
-                        : '<a class="button" style="background-color: red;" href="?dir=' . $dir . '&delete=' . $item . '">Delete</a>') . '</td>');
+                        : '<a class="button" style="background-color: red;" href="?dir=' . $dir . '&delete=' . $item . '">Delete</a>'));
+                    print(is_dir($dir . '/' . $item)
+                        ? ''
+                        : '<a class="button" style="background-color: lightgreen;" href="?dir=' . $dir . '&download=' . $item . '">Download</a>');
+                    print('</td>');
                     print('</tr>');
                 }
             }
