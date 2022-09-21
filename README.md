@@ -2,7 +2,9 @@
 
 ### Introduction
 
-File browser which is protected with a login feature with an ability to add new folders, delete, upload and download files. Works on Windows, Linux and Mac. The project was made for educational purposes.
+- File browser which is protected with a login feature with an ability to add new folders, delete, upload and download files.
+- Works on Windows, Linux and Mac. Note: The windows version only supports navigating and other features only within xampp/htdocs/ directory.
+- The project was made for educational purposes.
 
 ### Installation manual
 
@@ -14,3 +16,5 @@ File browser which is protected with a login feature with an ability to add new 
 - Login in with any username and password
 - Use the table to navigate folders
 - Press corresponding buttons to delete, upload files and create folders.
+
+Note: The application was untested on Mac OS
